@@ -1,0 +1,3 @@
+[submodule "libubox-sys/vendor/libubox"]
+	path = libubox-sys/vendor/libubox
+	url = https://git.openwrt.org/project/libubox.git

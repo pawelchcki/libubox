@@ -1,0 +1,18 @@
+[package]
+name         = "libubox"
+version      = "0.1.0"
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+description  = "Partial safe wrapper around libubox-sys (uloop guard, blob_buf RAII)."
+keywords     = ["openwrt", "ubox", "uloop", "blobmsg"]
+categories   = ["api-bindings", "os::unix-apis"]
+
+[dependencies]
+libubox-sys = { version = "0.1", path = "../libubox-sys" }
+libc        = { version = "0.2", optional = true }
+
+[features]
+default = []
+json    = ["libubox-sys/json", "dep:libc"]

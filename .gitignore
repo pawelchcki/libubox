@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+Cargo.lock.bak
+
+# Local Claude tooling state — keep shared content (skills, commands,
+# agents) under .claude/ commitable; ignore only per-user/transient bits.
+/.claude/scheduled_tasks.lock
+/.claude/settings.local.json
+/.claude/.session*
+/.claude/*.log

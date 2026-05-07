@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake pkg-config libjson-c-dev
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: cargo test (default)
+        run: cargo test --workspace
+
+      - name: cargo test (json)
+        run: cargo test --workspace --features json
+
+      - name: cargo doc
+        run: cargo doc --workspace --no-deps --features json
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets --features json -- -D warnings
+
+  bindgen-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake pkg-config libjson-c-dev
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Regenerate bindings
+        run: bash tools/regen-bindings.sh
+
+      - name: Assert no drift
+        run: git diff --exit-code libubox-sys/src/bindings/pregenerated.rs
+
+  publish-dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: cargo package --list -p libubox-sys
+        run: cargo package --list -p libubox-sys --allow-dirty
+
+      - name: cargo package --list -p libubox
+        run: cargo package --list -p libubox --allow-dirty
+
+  test-macos:
+    runs-on: macos-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system deps
+        run: brew install cmake json-c pkg-config
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: cargo test --features json
+        run: cargo test --workspace --features json
