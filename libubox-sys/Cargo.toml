@@ -1,6 +1,6 @@
 [package]
 name          = "libubox-sys"
-version       = "0.1.1+libubox-1501e60"
+version       = "0.1.2"
 edition.workspace      = true
 rust-version.workspace = true
 license.workspace      = true
