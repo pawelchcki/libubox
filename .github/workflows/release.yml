@@ -1,0 +1,55 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "libubox-sys-v*"
+      - "libubox-v*"
+  workflow_dispatch:
+    inputs:
+      crate:
+        description: "Crate to publish"
+        required: true
+        type: choice
+        options:
+          - libubox-sys
+          - libubox
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: crates-io
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Install build deps
+        run: sudo apt-get update && sudo apt-get install -y cmake pkg-config libjson-c-dev
+
+      - name: Pick crate from tag or input
+        id: pick
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "crate=${{ inputs.crate }}" >> "$GITHUB_OUTPUT"
+          else
+            tag="${GITHUB_REF#refs/tags/}"
+            case "$tag" in
+              libubox-sys-v*) echo "crate=libubox-sys" >> "$GITHUB_OUTPUT" ;;
+              libubox-v*)     echo "crate=libubox"     >> "$GITHUB_OUTPUT" ;;
+              *) echo "unrecognized tag: $tag" >&2; exit 1 ;;
+            esac
+          fi
+
+      - uses: rust-lang/crates-io-auth-action@v1
+        id: auth
+
+      - run: cargo publish -p "${{ steps.pick.outputs.crate }}"
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
