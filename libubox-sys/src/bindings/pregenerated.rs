@@ -56,8 +56,24 @@ pub const USOCK_NUMERIC: u32 = 2048;
 pub const USOCK_IPV6ONLY: u32 = 8192;
 pub const USOCK_IPV4ONLY: u32 = 16384;
 pub const USOCK_UNIX: u32 = 32768;
+pub type __uint32_t = ::std::os::raw::c_uint;
+pub type __uid_t = ::std::os::raw::c_uint;
 pub type __pid_t = ::std::os::raw::c_int;
+pub type __clock_t = ::std::os::raw::c_long;
+pub type __time_t = ::std::os::raw::c_long;
+pub type __suseconds_t = ::std::os::raw::c_long;
 pub type pid_t = __pid_t;
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct __sigset_t {
+    pub __val: [::std::os::raw::c_ulong; 16usize],
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct timeval {
+    pub tv_sec: __time_t,
+    pub tv_usec: __suseconds_t,
+}
 pub type __gnuc_va_list = __builtin_va_list;
 pub type va_list = __gnuc_va_list;
 pub const BLOB_ATTR_UNSPEC: _bindgen_ty_4 = 0;
@@ -329,6 +345,215 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
+#[derive(Copy, Clone)]
+pub union sigval {
+    pub sival_int: ::std::os::raw::c_int,
+    pub sival_ptr: *mut ::std::os::raw::c_void,
+}
+impl Default for sigval {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+pub type __sigval_t = sigval;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct siginfo_t {
+    pub si_signo: ::std::os::raw::c_int,
+    pub si_errno: ::std::os::raw::c_int,
+    pub si_code: ::std::os::raw::c_int,
+    pub __pad0: ::std::os::raw::c_int,
+    pub _sifields: siginfo_t__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union siginfo_t__bindgen_ty_1 {
+    pub _pad: [::std::os::raw::c_int; 28usize],
+    pub _kill: siginfo_t__bindgen_ty_1__bindgen_ty_1,
+    pub _timer: siginfo_t__bindgen_ty_1__bindgen_ty_2,
+    pub _rt: siginfo_t__bindgen_ty_1__bindgen_ty_3,
+    pub _sigchld: siginfo_t__bindgen_ty_1__bindgen_ty_4,
+    pub _sigfault: siginfo_t__bindgen_ty_1__bindgen_ty_5,
+    pub _sigpoll: siginfo_t__bindgen_ty_1__bindgen_ty_6,
+    pub _sigsys: siginfo_t__bindgen_ty_1__bindgen_ty_7,
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_1 {
+    pub si_pid: __pid_t,
+    pub si_uid: __uid_t,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_2 {
+    pub si_tid: ::std::os::raw::c_int,
+    pub si_overrun: ::std::os::raw::c_int,
+    pub si_sigval: __sigval_t,
+}
+impl Default for siginfo_t__bindgen_ty_1__bindgen_ty_2 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_3 {
+    pub si_pid: __pid_t,
+    pub si_uid: __uid_t,
+    pub si_sigval: __sigval_t,
+}
+impl Default for siginfo_t__bindgen_ty_1__bindgen_ty_3 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_4 {
+    pub si_pid: __pid_t,
+    pub si_uid: __uid_t,
+    pub si_status: ::std::os::raw::c_int,
+    pub si_utime: __clock_t,
+    pub si_stime: __clock_t,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_5 {
+    pub si_addr: *mut ::std::os::raw::c_void,
+    pub si_addr_lsb: ::std::os::raw::c_short,
+    pub _bounds: siginfo_t__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union siginfo_t__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1 {
+    pub _addr_bnd: siginfo_t__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1,
+    pub _pkey: __uint32_t,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 {
+    pub _lower: *mut ::std::os::raw::c_void,
+    pub _upper: *mut ::std::os::raw::c_void,
+}
+impl Default for siginfo_t__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+impl Default for siginfo_t__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+impl Default for siginfo_t__bindgen_ty_1__bindgen_ty_5 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_6 {
+    pub si_band: ::std::os::raw::c_long,
+    pub si_fd: ::std::os::raw::c_int,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct siginfo_t__bindgen_ty_1__bindgen_ty_7 {
+    pub _call_addr: *mut ::std::os::raw::c_void,
+    pub _syscall: ::std::os::raw::c_int,
+    pub _arch: ::std::os::raw::c_uint,
+}
+impl Default for siginfo_t__bindgen_ty_1__bindgen_ty_7 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+impl Default for siginfo_t__bindgen_ty_1 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+impl Default for siginfo_t {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+pub type __sighandler_t = ::std::option::Option<unsafe extern "C" fn(arg1: ::std::os::raw::c_int)>;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct sigaction {
+    pub __sigaction_handler: sigaction__bindgen_ty_1,
+    pub sa_mask: __sigset_t,
+    pub sa_flags: ::std::os::raw::c_int,
+    pub sa_restorer: ::std::option::Option<unsafe extern "C" fn()>,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union sigaction__bindgen_ty_1 {
+    pub sa_handler: __sighandler_t,
+    pub sa_sigaction: ::std::option::Option<
+        unsafe extern "C" fn(
+            arg1: ::std::os::raw::c_int,
+            arg2: *mut siginfo_t,
+            arg3: *mut ::std::os::raw::c_void,
+        ),
+    >,
+}
+impl Default for sigaction__bindgen_ty_1 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+impl Default for sigaction {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct list_head {
     pub next: *mut list_head,
@@ -354,27 +579,101 @@ pub type uloop_signal_handler = ::std::option::Option<unsafe extern "C" fn(s: *m
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct uloop_fd {
-    pub _address: u8,
+    pub cb: uloop_fd_handler,
+    pub fd: ::std::os::raw::c_int,
+    pub eof: bool,
+    pub error: bool,
+    pub registered: bool,
+    pub flags: u8,
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct uloop_timeout {
-    pub _address: u8,
+    pub list: list_head,
+    pub pending: bool,
+    pub cb: uloop_timeout_handler,
+    pub time: timeval,
+}
+impl Default for uloop_timeout {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct uloop_process {
-    pub _address: u8,
+    pub list: list_head,
+    pub pending: bool,
+    pub cb: uloop_process_handler,
+    pub pid: pid_t,
+}
+impl Default for uloop_process {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Copy, Clone)]
 pub struct uloop_interval {
-    pub _address: u8,
+    pub cb: uloop_interval_handler,
+    pub expirations: u64,
+    pub priv_: uloop_interval__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union uloop_interval__bindgen_ty_1 {
+    pub ufd: uloop_fd,
+    pub time: uloop_interval__bindgen_ty_1__bindgen_ty_1,
 }
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
+pub struct uloop_interval__bindgen_ty_1__bindgen_ty_1 {
+    pub fired: i64,
+    pub msecs: ::std::os::raw::c_uint,
+}
+impl Default for uloop_interval__bindgen_ty_1 {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+impl Default for uloop_interval {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
 pub struct uloop_signal {
-    pub _address: u8,
+    pub list: list_head,
+    pub orig: sigaction,
+    pub pending: bool,
+    pub cb: uloop_signal_handler,
+    pub signo: ::std::os::raw::c_int,
+}
+impl Default for uloop_signal {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 extern "C" {
     pub fn uloop_fd_add(
@@ -601,9 +900,60 @@ impl Default for udebug_buf {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
+pub struct udebug_packet_info {
+    pub attr: [*const ::std::os::raw::c_char; 2usize],
+}
+impl Default for udebug_packet_info {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct udebug_remote_buf {
+    pub node: avl_node,
+    pub buf: udebug_buf,
+    pub poll: bool,
+    pub head: u32,
+    pub pcap_iface: u32,
+    pub priv_: *mut ::std::os::raw::c_void,
+    pub meta: *const udebug_packet_info,
+}
+impl Default for udebug_remote_buf {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct udebug {
-    pub _address: u8,
+    pub local_rings: list_head,
+    pub remote_rings: avl_tree,
+    pub next_id: u32,
+    pub fd: uloop_fd,
+    pub poll_handle: ::std::os::raw::c_int,
+    pub socket_path: *mut ::std::os::raw::c_char,
+    pub reconnect: uloop_timeout,
+    pub notify_cb:
+        ::std::option::Option<unsafe extern "C" fn(ctx: *mut udebug, rb: *mut udebug_remote_buf)>,
+}
+impl Default for udebug {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 pub const ULOG_KMSG: _bindgen_ty_15 = 1;
 pub const ULOG_SYSLOG: _bindgen_ty_15 = 2;
@@ -738,14 +1088,37 @@ pub type vlist_update_cb = ::std::option::Option<
     ),
 >;
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct vlist_tree {
-    pub _address: u8,
+    pub avl: avl_tree,
+    pub update: vlist_update_cb,
+    pub keep_old: bool,
+    pub no_delete: bool,
+    pub version: ::std::os::raw::c_int,
+}
+impl Default for vlist_tree {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct vlist_node {
-    pub _address: u8,
+    pub avl: avl_node,
+    pub version: ::std::os::raw::c_int,
+}
+impl Default for vlist_node {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 extern "C" {
     pub fn vlist_init(tree: *mut vlist_tree, cmp: avl_tree_comp, update: vlist_update_cb);
@@ -772,9 +1145,19 @@ pub struct safe_list_iterator {
     _unused: [u8; 0],
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct safe_list {
-    pub _address: u8,
+    pub list: list_head,
+    pub i: *mut safe_list_iterator,
+}
+impl Default for safe_list {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 extern "C" {
     pub fn safe_list_for_each(
@@ -798,25 +1181,84 @@ extern "C" {
     pub fn safe_list_del(list: *mut safe_list);
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct runqueue {
-    pub _address: u8,
+    pub tasks_active: safe_list,
+    pub tasks_inactive: safe_list,
+    pub timeout: uloop_timeout,
+    pub running_tasks: ::std::os::raw::c_int,
+    pub max_running_tasks: ::std::os::raw::c_int,
+    pub stopped: bool,
+    pub empty: bool,
+    pub empty_cb: ::std::option::Option<unsafe extern "C" fn(q: *mut runqueue)>,
+}
+impl Default for runqueue {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct runqueue_task_type {
-    pub _address: u8,
+    pub name: *const ::std::os::raw::c_char,
+    pub run: ::std::option::Option<unsafe extern "C" fn(q: *mut runqueue, t: *mut runqueue_task)>,
+    pub cancel: ::std::option::Option<
+        unsafe extern "C" fn(q: *mut runqueue, t: *mut runqueue_task, type_: ::std::os::raw::c_int),
+    >,
+    pub kill: ::std::option::Option<unsafe extern "C" fn(q: *mut runqueue, t: *mut runqueue_task)>,
+}
+impl Default for runqueue_task_type {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct runqueue_task {
-    pub _address: u8,
+    pub list: safe_list,
+    pub type_: *const runqueue_task_type,
+    pub q: *mut runqueue,
+    pub complete:
+        ::std::option::Option<unsafe extern "C" fn(q: *mut runqueue, t: *mut runqueue_task)>,
+    pub timeout: uloop_timeout,
+    pub run_timeout: ::std::os::raw::c_int,
+    pub cancel_timeout: ::std::os::raw::c_int,
+    pub cancel_type: ::std::os::raw::c_int,
+    pub queued: bool,
+    pub running: bool,
+    pub cancelled: bool,
+}
+impl Default for runqueue_task {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct runqueue_process {
     pub task: runqueue_task,
     pub proc_: uloop_process,
+}
+impl Default for runqueue_process {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 extern "C" {
     pub fn runqueue_init(q: *mut runqueue);
@@ -903,6 +1345,9 @@ extern "C" {
         md5_buf: *mut ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
+pub const read_blocked_reason_READ_BLOCKED_USER: read_blocked_reason = 1;
+pub const read_blocked_reason_READ_BLOCKED_FULL: read_blocked_reason = 2;
+pub type read_blocked_reason = ::std::os::raw::c_uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ustream_buf_list {
@@ -928,20 +1373,76 @@ impl Default for ustream_buf_list {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct ustream {
-    pub _address: u8,
+    pub r: ustream_buf_list,
+    pub w: ustream_buf_list,
+    pub state_change: uloop_timeout,
+    pub next: *mut ustream,
+    pub notify_read: ::std::option::Option<
+        unsafe extern "C" fn(s: *mut ustream, bytes_new: ::std::os::raw::c_int),
+    >,
+    pub notify_write:
+        ::std::option::Option<unsafe extern "C" fn(s: *mut ustream, bytes: ::std::os::raw::c_int)>,
+    pub notify_state: ::std::option::Option<unsafe extern "C" fn(s: *mut ustream)>,
+    pub write: ::std::option::Option<
+        unsafe extern "C" fn(
+            s: *mut ustream,
+            buf: *const ::std::os::raw::c_char,
+            len: ::std::os::raw::c_int,
+            more: bool,
+        ) -> ::std::os::raw::c_int,
+    >,
+    pub free: ::std::option::Option<unsafe extern "C" fn(s: *mut ustream)>,
+    pub set_read_blocked: ::std::option::Option<unsafe extern "C" fn(s: *mut ustream)>,
+    pub poll: ::std::option::Option<unsafe extern "C" fn(s: *mut ustream) -> bool>,
+    pub string_data: bool,
+    pub write_error: bool,
+    pub eof: bool,
+    pub pending_cb: u8,
+    pub read_blocked: read_blocked_reason,
+}
+impl Default for ustream {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct ustream_fd {
     pub stream: ustream,
     pub fd: uloop_fd,
 }
+impl Default for ustream_fd {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug)]
 pub struct ustream_buf {
-    pub _address: u8,
+    pub next: *mut ustream_buf,
+    pub data: *mut ::std::os::raw::c_char,
+    pub tail: *mut ::std::os::raw::c_char,
+    pub end: *mut ::std::os::raw::c_char,
+    pub head: __IncompleteArrayField<::std::os::raw::c_char>,
+}
+impl Default for ustream_buf {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 extern "C" {
     pub fn ustream_fd_init(s: *mut ustream_fd, fd: ::std::os::raw::c_int);
@@ -1110,9 +1611,21 @@ impl Default for json_script_ctx {
     }
 }
 #[repr(C)]
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug)]
 pub struct json_script_file {
-    pub _address: u8,
+    pub avl: avl_node,
+    pub next: *mut json_script_file,
+    pub seq: ::std::os::raw::c_uint,
+    pub data: __IncompleteArrayField<blob_attr>,
+}
+impl Default for json_script_file {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
 }
 extern "C" {
     pub fn json_script_init(ctx: *mut json_script_ctx);

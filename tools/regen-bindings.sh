@@ -7,6 +7,21 @@
 
 set -euo pipefail
 
+# Bindgen output is libclang-version-sensitive (struct layouts, derive sets,
+# handling of `char head[]` flexible-array members). The committed bindings
+# and the `bindgen-drift` CI job both use libclang 18 (ubuntu-latest's
+# default). Set LIBCLANG_PATH to a libclang-18 install to avoid drift; the
+# script auto-detects common paths if it isn't set.
+if [[ -z "${LIBCLANG_PATH:-}" ]]; then
+    for candidate in /usr/lib/llvm-18/lib /usr/lib64/llvm18/lib; do
+        if [[ -e "${candidate}/libclang.so" ]] || compgen -G "${candidate}/libclang.so.*" >/dev/null; then
+            export LIBCLANG_PATH="${candidate}"
+            break
+        fi
+    done
+fi
+echo "LIBCLANG_PATH=${LIBCLANG_PATH:-<system default>}"
+
 repo_root="$(git rev-parse --show-toplevel)"
 sys_crate="${repo_root}/libubox-sys"
 
