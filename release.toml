@@ -1,0 +1,20 @@
+# cargo-release config. The release pipeline is split:
+#   1. `cargo release -p <crate> <bump> --execute` bumps Cargo.toml, commits,
+#      tags, and pushes (this file controls steps 1).
+#   2. The pushed tag triggers .github/workflows/release.yml, which runs the
+#      crates.io publish via trusted publishing and creates a GitHub release.
+#
+# Therefore cargo-release itself must NOT run `cargo publish`.
+
+publish = false
+
+# Match the tag format consumed by .github/workflows/release.yml.
+tag-name = "{{crate_name}}-v{{version}}"
+tag-message = "Release {{version}}"
+
+# Default cargo-release commit message is fine: "chore: Release {{crate_name}} version {{version}}".
+
+# Workspace dep version requirements get bumped along with the crate they
+# point at; we want libubox's `libubox-sys = "x.y.z"` to track libubox-sys
+# version bumps automatically.
+dependent-version = "upgrade"
