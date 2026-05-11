@@ -10,7 +10,7 @@ keywords     = ["openwrt", "ubox", "uloop", "blobmsg"]
 categories   = ["api-bindings", "os::unix-apis"]
 
 [dependencies]
-libubox-sys = { version = "0.0.1", path = "../libubox-sys" }
+libubox-sys = { version = "0.2.0", path = "../libubox-sys" }
 libc        = { version = "0.2", optional = true }
 
 [features]
